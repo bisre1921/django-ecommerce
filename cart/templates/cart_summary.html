@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+
+ {% block content %}
+    <!-- Header-->
+    <header class="bg-dark py-5">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center text-white">
+                <h1 class="display-4 fw-bolder">Shopping cart</h1>
+                <p class="lead fw-normal text-white-50 mb-0">View Your Cart...</p>
+            </div>
+        </div>
+    </header>
+   
+ {% endblock %}
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="{% static 's/scripts.js' %} "></script>
+    </body>
+</html>
