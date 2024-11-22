@@ -31,6 +31,7 @@
                         <a href="{% url 'home' %}" class="btn btn-secondary">
                             home
                         </a>
+                        <button type="button" value="{{ product.id }}" class="btn btn-secondary" id="add-cart" >Add To Cart</button>
                     </center>
                 </div>
               </div>
@@ -39,5 +40,29 @@
     </div>
 
     <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> 
+
+    <script>
+        var cartAddUrl = "{% url 'cart_add' %}";
+    
+        $(document).on('click', '#add-cart', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: cartAddUrl,
+                data: {
+                    product_id: $(this).val(),
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    action: 'post',
+                },
+                success: function (json) {
+                    alert('Product added to cart');
+                },
+                error: function (xhr, errmsg, err) {
+                    console.log(xhr.status + ": " + xhr.responseText);
+                },
+            });
+        });
+    </script>
+    
     
 {% endblock %}
