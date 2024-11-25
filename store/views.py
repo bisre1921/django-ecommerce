@@ -19,6 +19,10 @@ def product(request , pk):
     product = Product.objects.get(id=pk)
     return render(request , 'product.html' , {'product': product})
 
+def category_summary(request):
+    categories = Category.objects.all()
+    return render(request , 'category_summary.html' , {"categories": categories})
+
 def category(request , foo):
     foo = foo.replace('-' , ' ')
     try:
