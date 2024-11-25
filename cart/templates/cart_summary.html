@@ -62,6 +62,7 @@
                                     home
                                 </a>
                                 <button type="button" data-index="{{ product.id }}" class="btn btn-secondary update-cart">Update</button>
+                                <button type="button" data-index="{{ product.id }}" class="btn btn-danger delete-product">Delete</button>
                             </center>
                         </div>
                     </div>
@@ -81,6 +82,7 @@
 
     {% comment %} </body> {% endcomment %}
     <script>
+        {% comment %} update cart {% endcomment %}
         var cartUpdateUrl = "{% url 'cart_update' %}";
     
         $(document).on('click', '.update-cart', function (e) {
@@ -98,6 +100,31 @@
                 success: function (json) {
                     location.reload();
                     alert('Product updated successfully');
+                },
+                error: function (xhr, errmsg, err) {
+                    console.log(xhr.status + ": " + xhr.responseText);
+                },
+            });
+        });
+
+
+        {% comment %} delete product {% endcomment %}
+        var cartDeleteUrl = "{% url 'cart_delete' %}";
+    
+        $(document).on('click', '.delete-product', function (e) {
+            e.preventDefault();
+            var productid = $(this).data('index');
+            $.ajax({
+                type: 'POST',
+                url: cartDeleteUrl,
+                data: {
+                    product_id: $(this).data('index'),
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    action: 'post',
+                },
+                success: function (json) {
+                    location.reload();
+                    alert('Product deleted successfully');
                 },
                 error: function (xhr, errmsg, err) {
                     console.log(xhr.status + ": " + xhr.responseText);
