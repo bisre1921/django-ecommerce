@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .forms import SignUpForm
+from .forms import SignUpForm, UpdateUserForm
 from django import forms
 
 # Create your views here.
@@ -71,3 +71,25 @@ def register_user(request):
             return redirect('register') 
     else:
         return render(request , 'register.html' , {'form': form})
+    
+def update_user(request):
+    if request.user.is_authenticated:
+        current_user = User.objects.get(id=request.user.id)
+
+        # Handle POST request
+        if request.method == 'POST':
+            user_form = UpdateUserForm(request.POST, instance=current_user)
+            if user_form.is_valid():
+                user_form.save()
+                messages.success(request, "User updated successfully")
+                return redirect('home')
+        else:
+            # Pre-fill form with current user data for GET request
+            user_form = UpdateUserForm(instance=current_user)
+
+        return render(request, 'update_user.html', {'user_form': user_form})
+    else:
+        messages.warning(request, "You must be logged in to update your profile")
+        return redirect('login')
+
+ 
