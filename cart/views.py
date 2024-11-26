@@ -2,6 +2,7 @@ from django.shortcuts import render , get_object_or_404 , redirect
 from .cart import Cart
 from store.models import Product
 from django.http import JsonResponse
+from django.contrib import messages
 
 
 # Create your views here.
@@ -22,7 +23,7 @@ def cart_add(request):
         cart.add(product=product , quantity=product_qty)
         cart_quantity = cart.__len__()
         response = JsonResponse({'qty': cart_quantity})
-
+        messages.success(request, "Product Added To Cart Successfully")
         return response
 
 def cart_update(request):
@@ -34,6 +35,7 @@ def cart_update(request):
         cart.update(product=product_id , quantity=product_qty)
 
         response = JsonResponse({'qty': product_qty})
+        messages.success(request, "Product Updated Successfully")
         return response
         # return redirect('cart_summary')
         
@@ -43,4 +45,6 @@ def cart_delete(request):
         product_id = int(request.POST.get('product_id'))
         cart.delete(product=product_id)
         response = JsonResponse({'qty': cart.__len__()})
+        messages.success(request, "Product Deleted Successfully")
         return response
+    

@@ -69,7 +69,8 @@
                 },
                 success: function (json) {
                     document.getElementById('cart_quantity').innerHTML = json.qty;
-                    alert('Product added to cart');
+                    location.reload();
+                    // alert('Product added to cart');
                 },
                 error: function (xhr, errmsg, err) {
                     console.log(xhr.status + ": " + xhr.responseText);
