@@ -62,15 +62,20 @@ def register_user(request):
             form.save()
             username = form.cleaned_data["username"]
             password = form.cleaned_data["password1"]
-            user = authenticate(request , username=username , password=password)
-            login(request , user)
-            messages.success(request, "Account was created for " + username)
-            return redirect('home')
+            user = authenticate(request, username=username, password=password)
+            if user:  # Ensure user is not None
+                login(request, user)
+                messages.success(request, "Account was created for " + username)
+                return redirect('home')
+            else:
+                messages.error(request, "Authentication failed. Please try again.")
+                return redirect('register')
         else:
-            messages.success(request, "Invalid credentials, try again")
+            messages.error(request, "Invalid credentials, try again")
             return redirect('register') 
     else:
-        return render(request , 'register.html' , {'form': form})
+        return render(request, 'register.html', {'form': form})
+
     
 def update_user(request):
     if request.user.is_authenticated:
