@@ -1,11 +1,12 @@
 from django.shortcuts import render , redirect
-from .models import Product , Category
+from .models import Product , Category, Profile
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .forms import SignUpForm, UpdateUserForm, ChangePasswordForm
+from .forms import SignUpForm, UpdateUserForm, ChangePasswordForm, UserInfoForm
 from django import forms
+from django.core.exceptions import ObjectDoesNotExist
 
 # Create your views here.
 def home(request):
@@ -66,12 +67,13 @@ def register_user(request):
             if user:  # Ensure user is not None
                 login(request, user)
                 messages.success(request, "Account was created for " + username)
-                return redirect('home')
+                return redirect('update_user')
             else:
                 messages.error(request, "Authentication failed. Please try again.")
                 return redirect('register')
         else:
             messages.error(request, "Invalid credentials, try again")
+            print(form.errors)
             return redirect('register') 
     else:
         return render(request, 'register.html', {'form': form})
@@ -115,4 +117,26 @@ def update_password(request):
             return render(request, 'update_password.html', {'form': form})
     else:
         messages.warning(request, "You must be logged in to update your password")
+        return redirect('login')
+
+def update_info(request):
+    if request.user.is_authenticated:
+        try:
+            current_user = Profile.objects.get(user__id=request.user.id)
+        except ObjectDoesNotExist:
+            messages.error(request, "Profile does not exist for the user.")
+            return redirect('home')
+
+        if request.method == 'POST':
+            form = UserInfoForm(request.POST, instance=current_user)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Your Info updated successfully")
+                return redirect('home')
+        else:
+            form = UserInfoForm(instance=current_user)
+
+        return render(request, 'update_info.html', {'form': form})
+    else:
+        messages.warning(request, "You must be logged in to update your profile")
         return redirect('login')
